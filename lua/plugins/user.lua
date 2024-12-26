@@ -1,13 +1,8 @@
-if true then return {} end -- WARN: REMOVE THIS LINE TO ACTIVATE THIS FILE
-
--- You can also add or configure plugins by creating files in this `plugins/` folder
--- Here are some examples:
-
 ---@type LazySpec
 return {
 
   -- == Examples of Adding Plugins ==
-
+  { "scottmckendry/cyberdream.nvim" },
   "andweeb/presence.nvim",
   {
     "ray-x/lsp_signature.nvim",
@@ -80,6 +75,155 @@ return {
         -- disable for .vim files, but it work for another filetypes
         Rule("a", "a", "-vim")
       )
+    end,
+  },
+  {
+    "nvim-treesitter/nvim-treesitter",
+    run = ":TSUpdate",
+    config = function()
+      require("nvim-treesitter.configs").setup {
+        ensure_installed = {
+          "go",
+          "javascript",
+          "typescript",
+          "json",
+          "yaml",
+          "dockerfile",
+          "toml",
+          "markdown",
+          "sql",
+          "html",
+          "css",
+          "scss",
+          "graphql",
+          "proto",
+        }, -- установить парсеры для всех языков
+        highlight = {
+          enable = true, -- включить подсветку
+        },
+        indent = {
+          enable = true, -- автоматическая индентация
+        },
+      }
+    end,
+  },
+  {
+    "neovim/nvim-lspconfig",
+    config = function()
+      local lspconfig = require "lspconfig"
+      -- Настройка gopls (Go Language Server)
+      lspconfig.gopls.setup {
+        cmd = { "gopls" },
+        filetypes = { "go", "gomod" },
+        settings = {
+          gopls = {
+            analyses = {
+              unusedparams = true,
+              unreachable = true,
+            },
+            staticcheck = true,
+          },
+        },
+      }
+    end,
+  },
+  {
+    "hrsh7th/nvim-cmp",
+    dependencies = {
+      "hrsh7th/cmp-nvim-lsp", -- Источник для LSP
+      "hrsh7th/cmp-buffer", -- Источник для буфера
+      "hrsh7th/cmp-path", -- Источник для путей
+    },
+    config = function()
+      local cmp = require "cmp"
+      cmp.setup {
+        snippet = {
+          expand = function(args) require("luasnip").lsp_expand(args.body) end,
+        },
+        mapping = cmp.mapping.preset.insert {
+          ["<Tab>"] = cmp.mapping.select_next_item(),
+          ["<S-Tab>"] = cmp.mapping.select_prev_item(),
+          ["<CR>"] = cmp.mapping.confirm { select = true },
+        },
+        sources = {
+          { name = "nvim_lsp" },
+          { name = "buffer" },
+          { name = "path" },
+        },
+      }
+    end,
+  },
+  {
+    "L3MON4D3/LuaSnip",
+    config = function() require("luasnip.loaders.from_vscode").lazy_load() end,
+  },
+  {
+    "mfussenegger/nvim-dap",
+    config = function()
+      require("dap").adapters.go = {
+        type = "server",
+        port = 38697,
+        executable = {
+          command = "dlv",
+          args = { "dap" },
+        },
+      }
+      require("dap").configurations.go = {
+        {
+          type = "go",
+          name = "Launch",
+          request = "launch",
+          program = "${workspaceFolder}",
+        },
+      }
+    end,
+  },
+  {
+    "mhartington/formatter.nvim",
+    config = function()
+      require("formatter").setup {
+        filetype = {
+          go = {
+            function()
+              return {
+                exe = "gofmt", -- Форматировщик для Go
+                args = {},
+                stdin = true,
+              }
+            end,
+          },
+        },
+      }
+    end,
+  },
+  {
+    "iamcco/markdown-preview.nvim",
+    run = "cd app && npm install",
+    cmd = "MarkdownPreview",
+    config = function() vim.g.mkdp_auto_start = 1 end,
+  },
+  {
+    "nvim-telescope/telescope.nvim",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    config = function()
+      require("telescope").setup {
+        defaults = {
+          file_ignore_patterns = { "node_modules", ".git" },
+        },
+      }
+      vim.api.nvim_set_keymap("n", "<leader>fg", "<cmd>Telescope live_grep<cr>", { noremap = true })
+    end,
+  },
+  {
+    "lewis6991/gitsigns.nvim",
+    config = function()
+      require("gitsigns").setup {
+        signs = {
+          add = { hl = "GitGutterAdd", text = "│" },
+          change = { hl = "GitGutterChange", text = "│" },
+          delete = { hl = "GitGutterDelete", text = "│" },
+        },
+      }
     end,
   },
 }
