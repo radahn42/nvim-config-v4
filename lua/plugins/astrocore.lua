@@ -33,6 +33,7 @@ return {
         tabstop = 4,
         shiftwidth = 4,
         softtabstop = 4,
+        scrolloff = 8,
       },
       g = { -- vim.g.<key>
         -- configure global vim variables (vim.g)
@@ -67,6 +68,18 @@ return {
 
         -- setting a mapping to false will disable it
         -- ["<C-S>"] = false,
+      },
+      v = {
+        -- Переместить выделенный текст вниз
+        ["J"] = {
+          ":move '>+1<CR>gv=gv",
+          desc = "Переместить выделенный текст вниз",
+        },
+        -- Переместить выделенный текст вверх
+        ["K"] = {
+          ":move '<-2<CR>gv=gv",
+          desc = "Переместить выделенный текст вверх",
+        },
       },
     },
   },

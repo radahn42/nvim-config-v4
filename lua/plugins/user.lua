@@ -3,6 +3,7 @@ return {
 
   -- == Examples of Adding Plugins ==
   { "scottmckendry/cyberdream.nvim" },
+  { "rebelot/kanagawa.nvim" },
   "andweeb/presence.nvim",
   {
     "ray-x/lsp_signature.nvim",
@@ -97,6 +98,7 @@ return {
           "scss",
           "graphql",
           "proto",
+          "lua",
         }, -- установить парсеры для всех языков
         highlight = {
           enable = true, -- включить подсветку
@@ -129,6 +131,7 @@ return {
   },
   {
     "hrsh7th/nvim-cmp",
+    event = "InsertEnter", -- Загружается только при входе в режим вставки
     dependencies = {
       "hrsh7th/cmp-nvim-lsp", -- Источник для LSP
       "hrsh7th/cmp-buffer", -- Источник для буфера
@@ -199,7 +202,7 @@ return {
   {
     "iamcco/markdown-preview.nvim",
     run = "cd app && npm install",
-    cmd = "MarkdownPreview",
+    cmd = "MarkdownPreview", -- Загружается только по вызову команды
     config = function() vim.g.mkdp_auto_start = 1 end,
   },
   {
@@ -212,18 +215,6 @@ return {
         },
       }
       vim.api.nvim_set_keymap("n", "<leader>fg", "<cmd>Telescope live_grep<cr>", { noremap = true })
-    end,
-  },
-  {
-    "lewis6991/gitsigns.nvim",
-    config = function()
-      require("gitsigns").setup {
-        signs = {
-          add = { hl = "GitGutterAdd", text = "│" },
-          change = { hl = "GitGutterChange", text = "│" },
-          delete = { hl = "GitGutterDelete", text = "│" },
-        },
-      }
     end,
   },
 }
